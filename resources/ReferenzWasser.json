@@ -1,0 +1,166 @@
+{
+  "Referenzen":[
+    {
+      "name": "Trümmelbach",
+      "uuid": "d418e3cc-7884-4c81-8a49-45eb879741e3",
+      "niedrig": "1500",
+      "mittel": "2000",
+      "hoch": "3500",
+      "link": "https://www.hydrodaten.admin.ch/de/seen-und-fluesse/stationen-und-daten/2200",
+      "bemerkung": "Indikativ, kein direkter Messwert, nur als Vergleich"
+    },
+    {
+      "name": "Tschinglenbach",
+      "uuid": "dc87873a-1d76-4d9b-ad35-0b47a956699f",
+      "niedrig": "1000",
+      "mittel": "1800",
+      "hoch": "3000",
+      "link": "https://messdaten.gl.ch/messdaten",
+      "bemerkung": "Sernf / Matt als Messwert nehmen. Indikativ, kein direkter Messwert, nur als Vergleich"
+    },
+    {
+      "name": "Seerenbachfall",
+      "uuid": "c666df52-b742-4840-979b-66537c29fa2e",
+      "niedrig": "100",
+      "mittel": "300",
+      "hoch": "600",
+      "link": "https://www.hydrodaten.sg.ch/#4301",
+      "bemerkung": "Indikativ, kein direkter Messwert, Messwert ist vom Nachbarbach, nur als Vergleich"
+    },
+    {
+      "name": "Ragnatscherbachfall",
+      "uuid": "2f0eaad8-8dfb-45ab-8bc0-98aba443696d",
+      "niedrig": "50",
+      "mittel": "100",
+      "hoch": "160",
+      "link": "https://www.hydrodaten.sg.ch/#3801",
+      "bemerkung": "Achtung hohe Schwankungen bei Schneeschmelze"
+    },
+    {
+      "name": "Chli Schliere",
+      "uuid": "b696b122-961b-417a-aae9-8a6e01f4be4b",
+      "niedrig": "150",
+      "mittel": "300",
+      "hoch": "700",
+      "link": "https://www.hydrodaten.admin.ch/de/seen-und-fluesse/stationen-und-daten/2436",
+      "bemerkung": ""
+    },
+    {
+      "name": "Choltalbach",
+      "uuid": "8d115489-55ef-4714-a496-5d46434bb8fe",
+      "niedrig": "800",
+      "mittel": "1200",
+      "hoch": "2000",
+      "link": "https://www.hydrodaten.admin.ch/de/seen-und-fluesse/stationen-und-daten/2276",
+      "bemerkung": "Indikativ, kein direkter Messwert, Messwert ist vom Nachbarbach, nur als Vergleich"
+    },
+    {
+      "name": "Segnas",
+      "uuid": "9b74ab75-bc58-4cff-9c51-c542a363df65",
+      "niedrig": "80",
+      "mittel": "120",
+      "hoch": "200",
+      "link": "https://www.flimselectric.ch/energieproduktion/livedaten",
+      "bemerkung": "Bachfassung Segnas Restwassermenge: Achtung kann teilweise durch die Jahreszeit etwas variieren"
+    },
+    {
+      "name": "Flem I-V",
+      "uuid": "8d928ba9-26c2-4cd8-ad5b-780b5aec9431",
+      "niedrig": "80",
+      "mittel": "200",
+      "hoch": "350",
+      "link": "https://www.flimselectric.ch/energieproduktion/livedaten",
+      "bemerkung": "Achtung hohe Schwankungen bei Schneeschmelze"
+    },
+    {
+      "name": "Flem VI",
+      "uuid": "72076983-6fce-4c0e-97c7-5397c923599a",
+      "niedrig": "60",
+      "mittel": "100",
+      "hoch": "200",
+      "link": "https://www.flimselectric.ch/energieproduktion/livedaten",
+      "bemerkung": "Achtung hohe Schwankungen bei Schneeschmelze"
+    },
+    {
+      "name": "Turnigla",
+      "uuid": "c3df7b4a-9cd2-4221-ab68-4bb071fa1874",
+      "niedrig": "200",
+      "mittel": "350",
+      "hoch": "550",
+      "link": "https://www.flimselectric.ch/energieproduktion/livedaten",
+      "bemerkung": "Energieproduktion KW Mulin, indikative Angabe da noch die Quellfassung dazu kommt"
+    },
+    {
+      "name": "Rein da Sumvitgh",
+      "uuid": "010e3581-7048-488c-9b6f-84814f4ba123",
+      "niedrig": "300",
+      "mittel": "450",
+      "hoch": "600",
+      "link": "https://www.hydrodaten.admin.ch/de/seen-und-fluesse/stationen-und-daten/2430",
+      "bemerkung": "Canyon selber hat ca. 1/5 weniger Wasser da die Durchflussmessung etwas weiter unten erfolgt"
+    },
+    {
+      "name": "Hinterrhein",
+      "uuid": "af17b84d-e5bf-46d9-a1ab-aad0d3bdb65b",
+      "niedrig": "300",
+      "mittel": "600",
+      "hoch": "1000",
+      "link": "https://www.hydrodaten.admin.ch/de/seen-und-fluesse/stationen-und-daten/2631",
+      "bemerkung": "Achtung hohe Schwankungen bei Schneeschmelze"
+    },
+    {
+      "name": "Riale di Carecchio",
+      "uuid": "774b663c-760b-48c6-8066-36107e9c4394",
+      "niedrig": "150",
+      "mittel": "300",
+      "hoch": "600",
+      "link": "https://www.hydrodaten.admin.ch/de/seen-und-fluesse/stationen-und-daten/2612",
+      "bemerkung": "Achtung hohe Schwankungen bei Schneeschmelze"
+    },
+    {
+      "name": "Val d' Agro",
+      "uuid": "a44924c8-2571-4c9c-b233-0f6695831c9a",
+      "niedrig": "150",
+      "mittel": "300",
+      "hoch": "500",
+      "link": "https://www.hydrodaten.admin.ch/de/seen-und-fluesse/stationen-und-daten/2612",
+      "bemerkung": "Achtung hohe Schwankungen bei Schneeschmelze"
+    },
+    {
+      "name": "Riale di Pincascia",
+      "uuid": "e272aa2b-0ae3-4b5c-813d-2359672d74e9",
+      "niedrig": "200",
+      "mittel": "400",
+      "hoch": "700",
+      "link": "https://www.hydrodaten.admin.ch/de/seen-und-fluesse/stationen-und-daten/2612",
+      "bemerkung": "Achtung hohe Schwankungen bei Schneeschmelze"
+    },
+    {
+      "name": "Calnegia",
+      "uuid": "f84d2495-1ee4-411e-b7ae-800966b65532",
+      "niedrig": "150",
+      "mittel": "400",
+      "hoch": "800",
+      "link": "https://www.hydrodaten.admin.ch/de/seen-und-fluesse/stationen-und-daten/2356",
+      "bemerkung": "Achtung hohe Schwankungen bei Schneeschmelze"
+    },
+    {
+      "name": "Rovana",
+      "uuid": "d9f3cf06-33a3-427b-b992-e9d2b471bb4d",
+      "niedrig": "1000",
+      "mittel": "1500",
+      "hoch": "2000",
+      "link": "https://www.hydrodaten.admin.ch/de/seen-und-fluesse/stationen-und-daten/2605",
+      "bemerkung": "Indikativ, kein direkter Messwert, nur als Vergleich"
+    },
+    {
+      "name": "Lodrino",
+      "uuid": "447129fc-a969-4816-916b-d41f3840e5b4",
+      "niedrig": "150",
+      "mittel": "400",
+      "hoch": "1000",
+      "link": "https://www.hydrodaten.admin.ch/de/seen-und-fluesse/stationen-und-daten/2612",
+      "bemerkung": "Indikativ, kein direkter Messwert, nur als Vergleich"
+    }
+  ]
+}

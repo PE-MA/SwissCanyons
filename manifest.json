@@ -1,0 +1,50 @@
+{
+  "manifest_version": 3,
+  "name": "SwissCanyons",
+  "version": "0.2",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "Flipsi2412@web.de"
+    }
+  },
+
+  "description": "Enrichs the swiss Canyons with hydrodata and weather forecasts",
+
+  "icons": {
+    "16": "icons/schweiz_16.png",
+    "24": "icons/schweiz_24.png",
+    "32": "icons/schweiz_32.png",
+    "128": "icons/schweiz_128.png",
+    "1": "icons/ssvg.svg"
+  },
+
+  "content_scripts": [
+    {
+      "matches": [ "*://*.opencanyon.org/*/canyon/*" ],
+      "js": [ "enrich.js" ]
+    }
+  ],
+
+  "background": {
+    "scripts": [ "loadRef.js" ],
+    "service_worker": "loadRef.js",
+    "type": "module"
+  },
+
+  "permissions": [
+    "storage"
+  ],
+
+  "host_permissions": [ "<all_urls>" ],
+
+  "web_accessible_resources": [
+    {
+      "matches": [ "<all_urls>" ],
+      "resources": [ "/resources/ReferenzWasser.json" ]
+    },
+    {
+      "matches": [ "<all_urls>" ],
+      "resources": [ "/resources/Ssvg.svg" ]
+    }
+  ]
+}
