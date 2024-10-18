@@ -18,14 +18,34 @@ if (found.includes("220")) {
 
     var coordinates = getCoordinates();
     console.log("coordinates found: " + coordinates[0] + ", " + coordinates[1]);
-    var basin = getBasinData(coordinates);
-    basin.then((attributes) => addBasinInfo(attributes));
 
-    var plz = getPLZForCoordinates(coordinates);
-    var weather = plz.then((plz) => getWeatherForPLZ(plz));
+    try {
+        var plz = getPLZForCoordinates(coordinates);
+        var weather = plz.then((plz) => getWeatherForPLZ(plz));
+    } catch (error) {
+        console.error(error);
+    }
 
-    var uuid = getUuid();
-    addWaterRef(uuid);
+    try {
+        var uuid = getUuid();
+        var refDiv = document.createElement("div");
+        enrichDiv.appendChild(refDiv);
+
+        var hydroDiv = document.createElement("div");
+        enrichDiv.appendChild(hydroDiv);
+        addWaterRef(uuid);
+    } catch (error) {
+        console.error(error);
+    }
+
+    try {
+        var basin = getBasinData(coordinates);
+        var basinDiv = document.createElement("div");
+        enrichDiv.appendChild(basinDiv);
+        basin.then((attributes) => addBasinInfo(attributes));
+    } catch (error) {
+        console.error(error);
+    }
 }
 
 function setClaimHeader() {
@@ -89,7 +109,6 @@ async function getBasinData(coordinates) {
 async function addBasinInfo(basin) {
     await basin;
     
-    var basinDiv = document.createElement("div");
     basinDiv.classList.add("bg-slate-100", "p-1", "sm:p-2", "rounded-md", "sm:rounded-lg");
 
     var headLine = document.createElement("p");
@@ -144,9 +163,6 @@ async function addBasinInfo(basin) {
     basinTable.append(cell);
 
     basinDiv.append(basinTable);
-
-    enrichDiv.appendChild(basinDiv);
-
 }
 
 function addWaterRef(uuid) {
@@ -165,7 +181,6 @@ function addWaterRef(uuid) {
 }
 
 function addHydroHTML(hydroData) {
-    var hydroDiv = document.createElement("div");
     hydroDiv.classList.add("bg-slate-100", "p-1", "sm:p-2", "rounded-md", "sm:rounded-lg");
 
     var headLine = document.createElement("p");
@@ -207,12 +222,10 @@ function addHydroHTML(hydroData) {
     cell.classList.add("bg-slate-200");
     cell.innerText = Intl.NumberFormat('de-CH', { style: 'unit', unit: 'liter-per-second' }).format(hydroData.properties.max_24h * 1000);
     hydroTable.append(cell);
-
-    enrichDiv.appendChild(hydroDiv);
 }
 
 function addWaterHTML(waterRef, ) {
-    var refDiv = document.createElement("div");
+    
     refDiv.classList.add("bg-slate-100", "p-1", "sm:p-2", "rounded-md", "sm:rounded-lg");
 
     var headLine = document.createElement("p");
@@ -270,13 +283,12 @@ function addWaterHTML(waterRef, ) {
     refTable.append(cell);
 
     refDiv.append(refTable);
-    enrichDiv.appendChild(refDiv);
 }
 
 async function getcurrentFlowData(waterRef) {
     const regex = /(?<=stationen-und-daten\/).+?(?=$)/;
     var matches = waterRef.link.match(regex);
-    if (matches === undefined) {
+    if (matches.length === 1) {
         var messStellenID = matches[0];
         chrome.storage.local.get(["hydroData"]).then((result) => {
             console.log("Value is " + result);
