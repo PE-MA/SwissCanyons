@@ -27,7 +27,7 @@
 
   "background": {
     "scripts": [ "loadRef.js" ],
-    "service_worker": "loadRef.js",
+    "service_worker": [ "loadRef.js" ],
     "type": "module"
   },
 

@@ -1,3 +1,7 @@
+if (typeof browser === "undefined") {
+    var browser = chrome;
+}
+
 var possibleCountryElement = document.getElementsByClassName("bg-slate-100 p-1 sm:p-2 rounded-md sm:rounded-lg flex");
 var possibleCountryElement = Array.prototype.slice.call(possibleCountryElement, 0);
 var countryElement = possibleCountryElement.find((e) => e.childElementCount === 2);
@@ -41,6 +45,15 @@ if (found.includes("220")) {
     }
 
     try {
+        var historyDiv = document.createElement("div");
+        enrichDiv.appendChild(historyDiv);
+        var history = getHistory(coordinates);
+        history.then((history) => addHistoryHTML(history));
+    } catch (error) {
+        console.error(error);
+    }
+
+    try {
         var village = getPLZForCoordinates(coordinates);
         var weatherDiv = document.createElement("div");
         enrichDiv.appendChild(weatherDiv);
@@ -67,7 +80,7 @@ function setClaimHeader() {
     claim.classList.add("font-bold", "pl-1");
     claim.innerText = "Swiss Canyon";
     claimDiv.append(claim);
-    
+
     headerDiv.append(claimDiv);
     hydrologieTab.appendChild(headerDiv);
 }
@@ -110,7 +123,7 @@ async function getBasinData(coordinates) {
 
 async function addBasinHTML(basin) {
     await basin;
-    
+
     basinDiv.classList.add("bg-slate-100", "p-1", "sm:p-2", "rounded-md", "sm:rounded-lg");
 
     var headLine = document.createElement("p");
@@ -224,8 +237,8 @@ function addHydroHTML(hydroData) {
     hydroTable.append(cell);
 }
 
-function addWaterHTML(waterRef, ) {
-    
+function addWaterHTML(waterRef,) {
+
     refDiv.classList.add("bg-slate-100", "p-1", "sm:p-2", "rounded-md", "sm:rounded-lg");
 
     var headLine = document.createElement("p");
@@ -321,7 +334,7 @@ function addWeatherHTML(weather, villagedata) {
 
     var headLine = document.createElement("p");
     headLine.classList.add("font-bold");
-    headLine.innerText = "Wetter für: " + villagedata.langtext + " (" + villagedata.plz + ")";
+    headLine.innerText = "Wetterprognose für: " + villagedata.langtext + " (" + villagedata.plz + ")";
     weatherDiv.append(headLine);
 
     var linkToMS = document.createElement("a");
@@ -339,29 +352,29 @@ function addWeatherHTML(weather, villagedata) {
 
         var todaysWeather = weather.regionForecast[0];
         addCellsToTable(weatherTable, ["Heute (" + new Date(todaysWeather.dayDate).toLocaleDateString() + ")",
-            Intl.NumberFormat('de-CH', { style: 'unit', unit: 'celsius' }).format(todaysWeather.temperatureMin),
-            Intl.NumberFormat('de-CH', { style: 'unit', unit: 'celsius' }).format(todaysWeather.temperatureMax),
-            Intl.NumberFormat('de-CH', { style: 'unit', unit: 'millimeter' }).format(todaysWeather.precipitation),
-            Intl.NumberFormat('de-CH', { style: 'unit', unit: 'millimeter' }).format(todaysWeather.precipitationMin),
-            Intl.NumberFormat('de-CH', { style: 'unit', unit: 'millimeter' }).format(todaysWeather.precipitationMax),
+        Intl.NumberFormat('de-CH', { style: 'unit', unit: 'celsius' }).format(todaysWeather.temperatureMin),
+        Intl.NumberFormat('de-CH', { style: 'unit', unit: 'celsius' }).format(todaysWeather.temperatureMax),
+        Intl.NumberFormat('de-CH', { style: 'unit', unit: 'millimeter' }).format(todaysWeather.precipitation),
+        Intl.NumberFormat('de-CH', { style: 'unit', unit: 'millimeter' }).format(todaysWeather.precipitationMin),
+        Intl.NumberFormat('de-CH', { style: 'unit', unit: 'millimeter' }).format(todaysWeather.precipitationMax),
             ""]);
 
         var tomorrowsWeather = weather.regionForecast[1];
         addCellsToTable(weatherTable, ["Morgen (" + new Date(tomorrowsWeather.dayDate).toLocaleDateString() + ")",
-            Intl.NumberFormat('de-CH', { style: 'unit', unit: 'celsius' }).format(tomorrowsWeather.temperatureMin),
-            Intl.NumberFormat('de-CH', { style: 'unit', unit: 'celsius' }).format(tomorrowsWeather.temperatureMax),
-            Intl.NumberFormat('de-CH', { style: 'unit', unit: 'millimeter' }).format(tomorrowsWeather.precipitation),
-            Intl.NumberFormat('de-CH', { style: 'unit', unit: 'millimeter' }).format(tomorrowsWeather.precipitationMin),
-            Intl.NumberFormat('de-CH', { style: 'unit', unit: 'millimeter' }).format(tomorrowsWeather.precipitationMax),
+        Intl.NumberFormat('de-CH', { style: 'unit', unit: 'celsius' }).format(tomorrowsWeather.temperatureMin),
+        Intl.NumberFormat('de-CH', { style: 'unit', unit: 'celsius' }).format(tomorrowsWeather.temperatureMax),
+        Intl.NumberFormat('de-CH', { style: 'unit', unit: 'millimeter' }).format(tomorrowsWeather.precipitation),
+        Intl.NumberFormat('de-CH', { style: 'unit', unit: 'millimeter' }).format(tomorrowsWeather.precipitationMin),
+        Intl.NumberFormat('de-CH', { style: 'unit', unit: 'millimeter' }).format(tomorrowsWeather.precipitationMax),
             ""]);
 
         var theDayAfterTomorrowsWeather = weather.regionForecast[2];
         addCellsToTable(weatherTable, ["Übermorgen (" + new Date(theDayAfterTomorrowsWeather.dayDate).toLocaleDateString() + ")",
-            Intl.NumberFormat('de-CH', { style: 'unit', unit: 'celsius' }).format(theDayAfterTomorrowsWeather.temperatureMin),
-            Intl.NumberFormat('de-CH', { style: 'unit', unit: 'celsius' }).format(theDayAfterTomorrowsWeather.temperatureMax),
-            Intl.NumberFormat('de-CH', { style: 'unit', unit: 'millimeter' }).format(theDayAfterTomorrowsWeather.precipitation),
-            Intl.NumberFormat('de-CH', { style: 'unit', unit: 'millimeter' }).format(theDayAfterTomorrowsWeather.precipitationMin),
-            Intl.NumberFormat('de-CH', { style: 'unit', unit: 'millimeter' }).format(theDayAfterTomorrowsWeather.precipitationMax),
+        Intl.NumberFormat('de-CH', { style: 'unit', unit: 'celsius' }).format(theDayAfterTomorrowsWeather.temperatureMin),
+        Intl.NumberFormat('de-CH', { style: 'unit', unit: 'celsius' }).format(theDayAfterTomorrowsWeather.temperatureMax),
+        Intl.NumberFormat('de-CH', { style: 'unit', unit: 'millimeter' }).format(theDayAfterTomorrowsWeather.precipitation),
+        Intl.NumberFormat('de-CH', { style: 'unit', unit: 'millimeter' }).format(theDayAfterTomorrowsWeather.precipitationMin),
+        Intl.NumberFormat('de-CH', { style: 'unit', unit: 'millimeter' }).format(theDayAfterTomorrowsWeather.precipitationMax),
             ""]);
 
         weatherDiv.append(weatherTable);
@@ -369,10 +382,120 @@ function addWeatherHTML(weather, villagedata) {
 }
 
 function addCellsToTable(Table, valueArray) {
-    valueArray.forEach(function (element, ) {
+    valueArray.forEach(function (element) {
         var cell = document.createElement("div");
         cell.classList.add("bg-slate-200");
         cell.innerText = element;
         Table.append(cell);
-    })
+    });
+}
+
+async function getHistory(coordinates) {
+    var history72 = await chrome.storage.local.get(["history72"]);
+    const jsonArray = Object.values(history72)[0];
+
+    var lowestValue;
+    var lowestIndex;
+    jsonArray.forEach(function (element, i) {
+        var distance = haversine(coordinates[0], coordinates[1], element.Breitengrad, element.Laengengrad);
+        if (lowestValue === undefined || distance < lowestValue) {
+            lowestValue = distance;
+            lowestIndex = i;
+        }
+    });
+    var station72 = jsonArray[lowestIndex];
+
+    var history48 = await chrome.storage.local.get(["history48"]);
+    var station48 = Object.values(history48)[0].filter(
+        function (data) {
+            return data.WIGOS == station72.WIGOS;
+        }
+    )[0];
+
+    var history24 = await chrome.storage.local.get(["history24"]);
+    var station24 = Object.values(history24)[0].filter(
+        function (data) {
+            return data.WIGOS == station72.WIGOS;
+        }
+    )[0];
+
+    return [station72, station48, station24];
+}
+
+function addHistoryHTML(stations) {
+    historyDiv.classList.add("bg-slate-100", "p-1", "sm:p-2", "rounded-md", "sm:rounded-lg");
+
+    var headLine = document.createElement("p");
+    headLine.classList.add("font-bold");
+    headLine.innerText = "Niederschlag für: " + stations[0].Station;
+    historyDiv.append(headLine);
+
+    var linkToMS = document.createElement("a");
+    linkToMS.classList.add("hover:text-blue-700");
+    linkToMS.setAttribute('target', '_blank');
+    linkToMS.innerText = "Link zur Messstation";
+    linkToMS.href = stations[0].Link;
+    historyDiv.append(linkToMS);
+
+    var historyTable = document.createElement("div");
+    historyTable.classList.add("grid", "grid-cols-3", "gap-1");
+
+    addCellsToTable(historyTable, ["72h (" + new Date(stations[0].Messdatum).toLocaleString() + ")",
+    "48h (" + new Date(stations[1].Messdatum).toLocaleString() + ")",
+    "24h (" + new Date(stations[2].Messdatum).toLocaleString() + ")",
+    ]);
+
+    addCellsToTable(historyTable, [Intl.NumberFormat('de-CH', { style: 'unit', unit: 'millimeter' }).format(stations[0].Niederschlag_mm),
+        Intl.NumberFormat('de-CH', { style: 'unit', unit: 'millimeter' }).format(stations[1].Niederschlag_mm),
+        Intl.NumberFormat('de-CH', { style: 'unit', unit: 'millimeter' }).format(stations[2].Niederschlag_mm),
+    ]);
+
+    historyDiv.append(historyTable);
+}
+
+async function getStation(number, wigos) {
+    chrome.storage.local.get(["history" + number]).then((result) => {
+        console.log("Value is " + result);
+        const jsonArray = Object.values(result)[0];
+
+        if (wigos === undefined) {
+            var lowestValue;
+            var lowestIndex;
+            jsonArray.forEach(function (element, i) {
+                var distance = haversine(coordinates[0], coordinates[1], element.Breitengrad, element.Laengengrad);
+                if (lowestValue === undefined || distance < lowestValue) {
+                    lowestValue = distance;
+                    lowestIndex = i;
+                }
+            });
+            return jsonArray[lowestIndex];
+        }
+        else {
+            jsonArray.forEach(function (element) {
+                if (element.WIGOS === wigos) {
+                    return element;
+                }
+            });
+        }
+    });
+}
+
+function haversine(lat1, lon1, lat2, lon2) {
+    const R = 6371; // Erdradius in Kilometern
+
+    // Umrechnung der Gradangaben in Radians
+    const dLat = degreesToRadians(lat2 - lat1);
+    const dLon = degreesToRadians(lon2 - lon1);
+
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(degreesToRadians(lat1)) * Math.cos(degreesToRadians(lat2)) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    return R * c; // Entfernung in Kilometern
+}
+
+function degreesToRadians(degrees) {
+    return degrees * (Math.PI / 180);
 }
