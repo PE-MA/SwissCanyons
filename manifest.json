@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "SwissCanyons",
-  "version": "0.4",
+  "version": "0.6",
   "browser_specific_settings": {
     "gecko": {
       "id": "Flipsi2412@web.de"

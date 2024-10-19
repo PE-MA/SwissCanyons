@@ -188,8 +188,10 @@ function addWaterRef(uuid) {
             }
         )[0];
         console.log(waterRef);
-        addWaterHTML(waterRef);
-        getcurrentFlowData(waterRef);
+        if (waterRef !== undefined) {
+            addWaterHTML(waterRef);
+            getcurrentFlowData(waterRef);
+        }
     });
 }
 
@@ -237,7 +239,7 @@ function addHydroHTML(hydroData) {
     hydroTable.append(cell);
 }
 
-function addWaterHTML(waterRef,) {
+function addWaterHTML(waterRef) {
 
     refDiv.classList.add("bg-slate-100", "p-1", "sm:p-2", "rounded-md", "sm:rounded-lg");
 
@@ -427,7 +429,7 @@ function addHistoryHTML(stations) {
 
     var headLine = document.createElement("p");
     headLine.classList.add("font-bold");
-    headLine.innerText = "Niederschlag für: " + stations[0].Station;
+    headLine.innerText = "Vergangener Niederschlag für: " + stations[0].Station;
     historyDiv.append(headLine);
 
     var linkToMS = document.createElement("a");
