@@ -20,13 +20,6 @@ if (found.includes("220")) {
     console.log("coordinates found: " + coordinates[0] + ", " + coordinates[1]);
 
     try {
-        var plz = getPLZForCoordinates(coordinates);
-        var weather = plz.then((plz) => getWeatherForPLZ(plz));
-    } catch (error) {
-        console.error(error);
-    }
-
-    try {
         var uuid = getUuid();
         var refDiv = document.createElement("div");
         enrichDiv.appendChild(refDiv);
@@ -42,7 +35,16 @@ if (found.includes("220")) {
         var basin = getBasinData(coordinates);
         var basinDiv = document.createElement("div");
         enrichDiv.appendChild(basinDiv);
-        basin.then((attributes) => addBasinInfo(attributes));
+        basin.then((attributes) => addBasinHTML(attributes));
+    } catch (error) {
+        console.error(error);
+    }
+
+    try {
+        var village = getPLZForCoordinates(coordinates);
+        var weatherDiv = document.createElement("div");
+        enrichDiv.appendChild(weatherDiv);
+        var weather = village.then((village) => getWeatherForVillage(village));
     } catch (error) {
         console.error(error);
     }
@@ -106,7 +108,7 @@ async function getBasinData(coordinates) {
     return data.results[0].attributes;
 }
 
-async function addBasinInfo(basin) {
+async function addBasinHTML(basin) {
     await basin;
     
     basinDiv.classList.add("bg-slate-100", "p-1", "sm:p-2", "rounded-md", "sm:rounded-lg");
@@ -132,30 +134,28 @@ async function addBasinInfo(basin) {
     basinTable.append(cell);
     cell = document.createElement("div");
     cell.classList.add("bg-slate-200");
-    cell.innerText = basin.gesamtflaeche + " km²";
-    basinTable.append(cell);
-
-    cell = document.createElement("div");
-    cell.classList.add("bg-slate-200");
     cell.innerText = "Max. Höhe";
     basinTable.append(cell);
-    cell = document.createElement("div");
-    cell.classList.add("bg-slate-200");
-    cell.innerText = Intl.NumberFormat('de-CH', { style: 'unit', unit: 'meter' }).format(basin.max_z);
-    basinTable.append(cell);
-
     cell = document.createElement("div");
     cell.classList.add("bg-slate-200");
     cell.innerText = "Mittlere Höhe";
     basinTable.append(cell);
     cell = document.createElement("div");
     cell.classList.add("bg-slate-200");
-    cell.innerText = Intl.NumberFormat('de-CH', { style: 'unit', unit: 'meter' }).format(basin.mean_z);
+    cell.innerText = "Min. Höhe";
     basinTable.append(cell);
 
     cell = document.createElement("div");
     cell.classList.add("bg-slate-200");
-    cell.innerText = "Min. Höhe";
+    cell.innerText = basin.gesamtflaeche + " km²";
+    basinTable.append(cell);
+    cell = document.createElement("div");
+    cell.classList.add("bg-slate-200");
+    cell.innerText = Intl.NumberFormat('de-CH', { style: 'unit', unit: 'meter' }).format(basin.max_z);
+    basinTable.append(cell);
+    cell = document.createElement("div");
+    cell.classList.add("bg-slate-200");
+    cell.innerText = Intl.NumberFormat('de-CH', { style: 'unit', unit: 'meter' }).format(basin.mean_z);
     basinTable.append(cell);
     cell = document.createElement("div");
     cell.classList.add("bg-slate-200");
@@ -230,7 +230,7 @@ function addWaterHTML(waterRef, ) {
 
     var headLine = document.createElement("p");
     headLine.classList.add("font-bold");
-    headLine.innerText = "Referenz";
+    headLine.innerText = "Referenzwerte";
     refDiv.append(headLine);
 
     var linkToMap = document.createElement("a");
@@ -307,13 +307,72 @@ async function getcurrentFlowData(waterRef) {
 async function getPLZForCoordinates(coordinates) {
     var urlString = "https://api3.geo.admin.ch/rest/services/api/MapServer/identify?geometryType=esriGeometryPoint&returnGeometry=false&sr=4326&geometry=" + coordinates[1] + "," + coordinates[0] + "&imageDisplay=0,0,0&mapExtent=0,0,0,0&tolerance=0&layers=all:ch.swisstopo-vd.ortschaftenverzeichnis_plz&returnGeometry=false";
     var data = await fetchAsync(urlString);
-    return data.results[0].attributes.plz;
+    return data.results[0].attributes;
 
     //https://api3.geo.admin.ch/rest/services/api/MapServer/identify?geometryType=esriGeometryPoint&returnGeometry=false&sr=4326&geometry=8.964972,46.329091&imageDisplay=0,0,0&mapExtent=0,0,0,0&tolerance=0&layers=all:ch.swisstopo-vd.ortschaftenverzeichnis_plz&returnGeometry=false
 }
 
-async function getWeatherForPLZ(plz) {
-    var urlString = "https://app-prod-ws.meteoswiss-app.ch/v1/forecast?plz=" + plz + "00&callback=?";
-    var data = await fetchAsync(urlString);
-    return data;
+async function getWeatherForVillage(village) {
+    browser.runtime.sendMessage({ plz: village.plz }).then((w) => addWeatherHTML(w, village));
+}
+
+function addWeatherHTML(weather, villagedata) {
+    weatherDiv.classList.add("bg-slate-100", "p-1", "sm:p-2", "rounded-md", "sm:rounded-lg");
+
+    var headLine = document.createElement("p");
+    headLine.classList.add("font-bold");
+    headLine.innerText = "Wetter für: " + villagedata.langtext + " (" + villagedata.plz + ")";
+    weatherDiv.append(headLine);
+
+    var linkToMS = document.createElement("a");
+    linkToMS.classList.add("hover:text-blue-700");
+    linkToMS.setAttribute('target', '_blank');
+    linkToMS.innerText = "Link zu MeteoSwiss";
+    linkToMS.href = "https://www.meteoschweiz.admin.ch/lokalprognose/" + villagedata.langtext.toLowerCase() + "/" + villagedata.plz + ".html#forecast-tab=detail-view";
+    weatherDiv.append(linkToMS);
+
+    if (weather !== undefined) {
+        var weatherTable = document.createElement("div");
+        weatherTable.classList.add("grid", "grid-cols-7", "gap-1");
+
+        addCellsToTable(weatherTable, ["", "Temp-Min", "Temp-Max", "Regen", "Regen-Von", "Regen-Bis", "Vorschau"]);
+
+        var todaysWeather = weather.regionForecast[0];
+        addCellsToTable(weatherTable, ["Heute (" + new Date(todaysWeather.dayDate).toLocaleDateString() + ")",
+            Intl.NumberFormat('de-CH', { style: 'unit', unit: 'celsius' }).format(todaysWeather.temperatureMin),
+            Intl.NumberFormat('de-CH', { style: 'unit', unit: 'celsius' }).format(todaysWeather.temperatureMax),
+            Intl.NumberFormat('de-CH', { style: 'unit', unit: 'millimeter' }).format(todaysWeather.precipitation),
+            Intl.NumberFormat('de-CH', { style: 'unit', unit: 'millimeter' }).format(todaysWeather.precipitationMin),
+            Intl.NumberFormat('de-CH', { style: 'unit', unit: 'millimeter' }).format(todaysWeather.precipitationMax),
+            ""]);
+
+        var tomorrowsWeather = weather.regionForecast[1];
+        addCellsToTable(weatherTable, ["Morgen (" + new Date(tomorrowsWeather.dayDate).toLocaleDateString() + ")",
+            Intl.NumberFormat('de-CH', { style: 'unit', unit: 'celsius' }).format(tomorrowsWeather.temperatureMin),
+            Intl.NumberFormat('de-CH', { style: 'unit', unit: 'celsius' }).format(tomorrowsWeather.temperatureMax),
+            Intl.NumberFormat('de-CH', { style: 'unit', unit: 'millimeter' }).format(tomorrowsWeather.precipitation),
+            Intl.NumberFormat('de-CH', { style: 'unit', unit: 'millimeter' }).format(tomorrowsWeather.precipitationMin),
+            Intl.NumberFormat('de-CH', { style: 'unit', unit: 'millimeter' }).format(tomorrowsWeather.precipitationMax),
+            ""]);
+
+        var theDayAfterTomorrowsWeather = weather.regionForecast[2];
+        addCellsToTable(weatherTable, ["Übermorgen (" + new Date(theDayAfterTomorrowsWeather.dayDate).toLocaleDateString() + ")",
+            Intl.NumberFormat('de-CH', { style: 'unit', unit: 'celsius' }).format(theDayAfterTomorrowsWeather.temperatureMin),
+            Intl.NumberFormat('de-CH', { style: 'unit', unit: 'celsius' }).format(theDayAfterTomorrowsWeather.temperatureMax),
+            Intl.NumberFormat('de-CH', { style: 'unit', unit: 'millimeter' }).format(theDayAfterTomorrowsWeather.precipitation),
+            Intl.NumberFormat('de-CH', { style: 'unit', unit: 'millimeter' }).format(theDayAfterTomorrowsWeather.precipitationMin),
+            Intl.NumberFormat('de-CH', { style: 'unit', unit: 'millimeter' }).format(theDayAfterTomorrowsWeather.precipitationMax),
+            ""]);
+
+        weatherDiv.append(weatherTable);
+    }
+}
+
+function addCellsToTable(Table, valueArray) {
+    valueArray.forEach(function (element, ) {
+        var cell = document.createElement("div");
+        cell.classList.add("bg-slate-200");
+        cell.innerText = element;
+        Table.append(cell);
+    })
 }

@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "SwissCanyons",
-  "version": "0.2",
+  "version": "0.3",
   "browser_specific_settings": {
     "gecko": {
       "id": "Flipsi2412@web.de"
@@ -22,12 +22,16 @@
     {
       "matches": [ "*://*.opencanyon.org/*/canyon/*" ],
       "js": [ "enrich.js" ]
+    },
+    {
+      "matches": [ "*://*.meteoschweiz.admin.ch/*" ],
+      "js": [ "meteoswiss.js" ]
     }
   ],
 
   "background": {
     "scripts": [ "loadRef.js" ],
-    "service_worker": "loadRef.js",
+    "service_worker": [ "loadRef.js" ],
     "type": "module"
   },
 
@@ -35,7 +39,13 @@
     "storage"
   ],
 
-  "host_permissions": [ "<all_urls>" ],
+  "host_permissions": [
+    "https://*.meteoswiss-app.ch/*",
+    "https://*.admin.ch/*",
+    "<all_urls>",
+    "https://*/*",
+    "https://www.meteoschweiz.admin.ch/*"
+  ],
 
   "web_accessible_resources": [
     {
