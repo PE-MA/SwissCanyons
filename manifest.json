@@ -2,11 +2,6 @@
   "manifest_version": 3,
   "name": "SwissCanyons",
   "version": "0.6",
-  "browser_specific_settings": {
-    "gecko": {
-      "id": "Flipsi2412@web.de"
-    }
-  },
 
   "description": "Enrichs the swiss Canyons with hydrodata and weather forecasts",
 
@@ -26,9 +21,9 @@
   ],
 
   "background": {
-    "scripts": [ "loadRef.js" ],
     "service_worker": "loadRef.js",
-    "type": "module"
+    "type": "module",
+    "scripts": [ "loadRef.js" ]
   },
 
   "permissions": [

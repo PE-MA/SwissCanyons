@@ -45,10 +45,10 @@ if (found.includes("220")) {
     }
 
     try {
+        var historicalWeather = getHistory(coordinates);
         var historyDiv = document.createElement("div");
         enrichDiv.appendChild(historyDiv);
-        var history = getHistory(coordinates);
-        history.then((history) => addHistoryHTML(history));
+        historicalWeather.then((attributes) => addHistoryHTML(attributes));
     } catch (error) {
         console.error(error);
     }
@@ -305,15 +305,14 @@ async function getcurrentFlowData(waterRef) {
     var matches = waterRef.link.match(regex);
     if (matches.length === 1) {
         var messStellenID = matches[0];
-        chrome.storage.local.get(["hydroData"]).then((result) => {
-            console.log("Value is " + result);
-            const jsonArray = Object.values(result.hydroData);
+        browser.runtime.sendMessage({ messStellenID: messStellenID }).then((result) => {
+            //    //chrome.storage.local.get(["hydroData"]).then((result) => {
+            const jsonArray = Object.values(result);
             var hydroData = jsonArray.filter(
                 function (data) {
                     return data.properties.key == messStellenID;
                 }
             )[0];
-            console.log(hydroData);
             addHydroHTML(hydroData);
         });
     }
@@ -393,38 +392,46 @@ function addCellsToTable(Table, valueArray) {
 }
 
 async function getHistory(coordinates) {
-    var history72 = await chrome.storage.local.get(["history72"]);
-    const jsonArray = Object.values(history72)[0];
+    return browser.runtime.sendMessage({ p: "test" }).then((result) => {
+        var history72 = result[0];
+        const jsonArray = Object.values(history72);
 
-    var lowestValue;
-    var lowestIndex;
-    jsonArray.forEach(function (element, i) {
-        var distance = haversine(coordinates[0], coordinates[1], element.Breitengrad, element.Laengengrad);
-        if (lowestValue === undefined || distance < lowestValue) {
-            lowestValue = distance;
-            lowestIndex = i;
-        }
+        var lowestValue;
+        var lowestIndex;
+        jsonArray.forEach(function (element, i) {
+            var distance = haversine(coordinates[0], coordinates[1], element.Breitengrad, element.Laengengrad);
+            if (lowestValue === undefined || distance < lowestValue) {
+                lowestValue = distance;
+                lowestIndex = i;
+            }
+        });
+        var station72 = jsonArray[lowestIndex];
+
+        var history48 = result[1];
+        var station48 = Object.values(history48).filter(
+            function (data) {
+                return data.WIGOS == station72.WIGOS;
+            }
+        )[0];
+
+        var history24 = result[2];
+        var station24 = Object.values(history24).filter(
+            function (data) {
+                return data.WIGOS == station72.WIGOS;
+            }
+        )[0];
+
+        return [station72, station48, station24];
     });
-    var station72 = jsonArray[lowestIndex];
-
-    var history48 = await chrome.storage.local.get(["history48"]);
-    var station48 = Object.values(history48)[0].filter(
-        function (data) {
-            return data.WIGOS == station72.WIGOS;
-        }
-    )[0];
-
-    var history24 = await chrome.storage.local.get(["history24"]);
-    var station24 = Object.values(history24)[0].filter(
-        function (data) {
-            return data.WIGOS == station72.WIGOS;
-        }
-    )[0];
-
-    return [station72, station48, station24];
 }
 
-function addHistoryHTML(stations) {
+async function loadHistory(number) {
+    return browser.storage.local.get(["history" + number]).then((result) => {
+        return result;
+    });
+}
+
+async function addHistoryHTML(stations) {
     historyDiv.classList.add("bg-slate-100", "p-1", "sm:p-2", "rounded-md", "sm:rounded-lg");
 
     var headLine = document.createElement("p");
@@ -448,8 +455,8 @@ function addHistoryHTML(stations) {
     ]);
 
     addCellsToTable(historyTable, [Intl.NumberFormat('de-CH', { style: 'unit', unit: 'millimeter' }).format(stations[0].Niederschlag_mm),
-        Intl.NumberFormat('de-CH', { style: 'unit', unit: 'millimeter' }).format(stations[1].Niederschlag_mm),
-        Intl.NumberFormat('de-CH', { style: 'unit', unit: 'millimeter' }).format(stations[2].Niederschlag_mm),
+    Intl.NumberFormat('de-CH', { style: 'unit', unit: 'millimeter' }).format(stations[1].Niederschlag_mm),
+    Intl.NumberFormat('de-CH', { style: 'unit', unit: 'millimeter' }).format(stations[2].Niederschlag_mm),
     ]);
 
     historyDiv.append(historyTable);
