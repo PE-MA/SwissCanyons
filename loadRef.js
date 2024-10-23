@@ -25,27 +25,25 @@ browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
             .then(response => response.json())
             .then(data => {
                 sendResponse(data);
-                return data;
             })
             .catch(error => {
                 console.error("Fehler beim Laden der JSON-Datei:", error);
             });
-
+        return true;
     }
     else if (request.messStellenID !== undefined) {
         if (currentDate.getTime() < lastlyLoadedHydro.getTime() + refreshDataIntervall) {
             browser.storage.local.get(["hydroData"]).then((result) => {
-                sendResponse(result);
-                return result;
+                sendResponse(result.hydroData);
             });
-
+            return true;
         }
         else {
             getHydroData()
                 .then(response => {
-                    sendResponse(response);
-                    return response;
+                    sendResponse(response.features);
                 });
+            return true;
         }
     }
     else {
@@ -61,17 +59,6 @@ browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
             });
             return true;
         }
-        //if (currentDate.getTime() < (lastlyLoadedHistory.getTime() + refreshDataIntervall)) {
-        //    var history = await browser.storage.local.get(["history"]).then((result) => {
-        //        return result;
-        //    });
-        //    history = history.history;
-        //}
-        //else {
-        //    var history = await getHistory();
-        //}
-        //sendResponse(history[0]);
-        //return history[0];
     }
 });
 
