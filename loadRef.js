@@ -15,49 +15,63 @@ getHistory();
 const refreshDataIntervall = 1800000;
 //const refreshDataIntervall = 1;
 
-browser.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
+browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
     var currentDate = new Date();
     console.log(sender.tab ?
         "from a content script:" + sender.tab.url :
         "from the extension");
     if (request.plz !== undefined) {
-        var weather = await fetch("https://app-prod-ws.meteoswiss-app.ch/v1/forecast?plz=" + request.plz + "00&callback=?")
+        fetch("https://app-prod-ws.meteoswiss-app.ch/v1/forecast?plz=" + request.plz + "00&callback=?")
             .then(response => response.json())
             .then(data => {
+                sendResponse(data);
                 return data;
             })
             .catch(error => {
                 console.error("Fehler beim Laden der JSON-Datei:", error);
             });
-        sendResponse(weather);
-        return weather;
+
     }
     else if (request.messStellenID !== undefined) {
         if (currentDate.getTime() < lastlyLoadedHydro.getTime() + refreshDataIntervall) {
-            var hydroData = await browser.storage.local.get(["hydroData"]).then((result) => {
+            browser.storage.local.get(["hydroData"]).then((result) => {
+                sendResponse(result);
                 return result;
             });
-            sendResponse(hydroData.hydroData);
-            return hydroData.hydroData;
+
         }
         else {
-            var hydro = await getHydroData();
-            sendResponse(hydro.features);
-            return hydro.features;
+            getHydroData()
+                .then(response => {
+                    sendResponse(response);
+                    return response;
+                });
         }
     }
     else {
         if (currentDate.getTime() < (lastlyLoadedHistory.getTime() + refreshDataIntervall)) {
-            var history = await browser.storage.local.get(["history"]).then((result) => {
-                return result;
+            browser.storage.local.get(["history"]).then((result) => {
+                sendResponse(result.history);
             });
-            history = history.history;
+            return true;
         }
         else {
-            var history = await getHistory();
+            getHistory().then((result) => {
+                sendResponse(result);
+            });
+            return true;
         }
-        sendResponse(history);
-        return history;
+        //if (currentDate.getTime() < (lastlyLoadedHistory.getTime() + refreshDataIntervall)) {
+        //    var history = await browser.storage.local.get(["history"]).then((result) => {
+        //        return result;
+        //    });
+        //    history = history.history;
+        //}
+        //else {
+        //    var history = await getHistory();
+        //}
+        //sendResponse(history[0]);
+        //return history[0];
     }
 });
 

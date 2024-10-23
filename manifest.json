@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "SwissCanyons",
-  "version": "0.6",
+  "version": "0.7",
 
   "description": "Enrichs the swiss Canyons with hydrodata and weather forecasts",
 
@@ -22,8 +22,7 @@
 
   "background": {
     "service_worker": "loadRef.js",
-    "type": "module",
-    "scripts": [ "loadRef.js" ]
+    "type": "module"
   },
 
   "permissions": [

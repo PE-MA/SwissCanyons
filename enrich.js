@@ -45,10 +45,9 @@ if (found.includes("220")) {
     }
 
     try {
-        var historicalWeather = getHistory(coordinates);
         var historyDiv = document.createElement("div");
         enrichDiv.appendChild(historyDiv);
-        historicalWeather.then((attributes) => addHistoryHTML(attributes));
+        var historicalWeather = addHistory(coordinates);
     } catch (error) {
         console.error(error);
     }
@@ -391,8 +390,9 @@ function addCellsToTable(Table, valueArray) {
     });
 }
 
-async function getHistory(coordinates) {
-    return browser.runtime.sendMessage({ p: "test" }).then((result) => {
+async function addHistory(coordinates) {
+
+    browser.runtime.sendMessage({ p: "Test" }, result => {
         var history72 = result[0];
         const jsonArray = Object.values(history72);
 
@@ -420,14 +420,7 @@ async function getHistory(coordinates) {
                 return data.WIGOS == station72.WIGOS;
             }
         )[0];
-
-        return [station72, station48, station24];
-    });
-}
-
-async function loadHistory(number) {
-    return browser.storage.local.get(["history" + number]).then((result) => {
-        return result;
+        addHistoryHTML([station72, station48, station24])
     });
 }
 
@@ -460,33 +453,6 @@ async function addHistoryHTML(stations) {
     ]);
 
     historyDiv.append(historyTable);
-}
-
-async function getStation(number, wigos) {
-    chrome.storage.local.get(["history" + number]).then((result) => {
-        console.log("Value is " + result);
-        const jsonArray = Object.values(result)[0];
-
-        if (wigos === undefined) {
-            var lowestValue;
-            var lowestIndex;
-            jsonArray.forEach(function (element, i) {
-                var distance = haversine(coordinates[0], coordinates[1], element.Breitengrad, element.Laengengrad);
-                if (lowestValue === undefined || distance < lowestValue) {
-                    lowestValue = distance;
-                    lowestIndex = i;
-                }
-            });
-            return jsonArray[lowestIndex];
-        }
-        else {
-            jsonArray.forEach(function (element) {
-                if (element.WIGOS === wigos) {
-                    return element;
-                }
-            });
-        }
-    });
 }
 
 function haversine(lat1, lon1, lat2, lon2) {
